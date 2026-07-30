@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import random
 
-from nowhere import humanities
+from nowhere import humanities, server
 
 
 def test_has_place():
@@ -51,6 +51,18 @@ def test_draw_no_repeat_and_exhaust():
 def test_draw_unknown_place():
     assert humanities.draw("不存在的地方", set(), random.Random(1)) is None
     assert humanities.draw(None, set(), random.Random(1)) is None
+
+
+def test_landing_humanities_keeps_full_story():
+    """旁观页所读的落地正文不应把人文故事截成前 60 字。"""
+    full_text = "滕子京重修岳阳楼后请范仲淹作记。" * 10
+    rendered = server._format_landing_humanities({
+        "place": "岳阳楼",
+        "text": full_text,
+    })
+
+    assert full_text in rendered
+    assert rendered.endswith(full_text)
 
 
 def test_ref_carries_ask_hook():

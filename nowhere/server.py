@@ -691,6 +691,11 @@ def _build_salience_candidates(
 # =====================================================================
 
 
+def _format_landing_humanities(card: dict) -> str:
+    """Render a landing humanities card without truncating its story."""
+    return f"你落在了{card['place']}附近。这里有过——{card['text']}"
+
+
 async def open_door_impl(to: str | None = None, resume: bool = False) -> dict:
     """Open the door and land somewhere."""
     async with _door_lock:
@@ -895,8 +900,7 @@ async def _open_door_locked(to: str | None = None, resume: bool = False) -> dict
     if h_card:
         _state.seen_humanities.add(h_card["key"])
         placememory.save_seen_humanities(_state.seen_humanities)
-        excerpt = h_card["text"][:60] + ("..." if len(h_card["text"]) > 60 else "")
-        prose += f"你落在了{h_card['place']}附近。这里有过——{excerpt}"
+        prose += _format_landing_humanities(h_card)
 
     _state.last_text = prose
     _state.save()
