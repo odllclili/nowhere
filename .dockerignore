@@ -1,0 +1,11 @@
+.git
+.venv
+.pytest_cache
+__pycache__
+*.pyc
+*.pyo
+*.egg-info
+tools
+nowhere/tests
+nowhere/tmp_home
+nowhere/static/postcards

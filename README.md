@@ -105,6 +105,35 @@ curl -X POST http://localhost:8080/ask -d '{"topic": "故宫"}'
 
 返回 JSON，包含 `text`（身体报告）和 `data`（结构化数据）。把端点文档发给 ChatGPT/DeepSeek 的 Function Calling 就能用。
 
+### 方式三点五：ChatGPT 远程 MCP
+
+部署仓库后，服务会同时提供网页旁观者、普通 HTTP API 和
+Streamable HTTP MCP：
+
+```text
+https://你的域名/mcp
+```
+
+在 ChatGPT 的开发者模式中创建自定义连接器，服务器 URL 填上面的
+`/mcp` 地址。连接成功后可以直接说“开门去京都”“往北走”或
+“寄一张明信片”。
+
+本地验证远程入口：
+
+```bash
+python -m nowhere.remote
+```
+
+默认地址：
+
+- MCP：`http://localhost:8080/mcp`
+- 网页旁观者：`http://localhost:8080/`
+- 健康检查：`http://localhost:8080/healthz`
+
+仓库附带 `Dockerfile` 和 `railway.json`，可直接部署到 Railway。若要让
+旅程在重启和重新部署后继续，请挂载持久卷到 `/data`；容器默认把旅程
+数据写在 `/data/nowhere`。
+
 ### 方式四：网页旁观者
 
 ```bash
