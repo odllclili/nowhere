@@ -65,6 +65,20 @@ def test_landing_humanities_keeps_full_story():
     assert rendered.endswith(full_text)
 
 
+def test_legacy_landing_humanities_expands_saved_excerpt():
+    """旧存档里已经被截断的落地故事也应在旁观页恢复全文。"""
+    full_text = (
+        "1045年,滕子京被贬到岳州,重修了岳阳楼。他寄了一幅画给范仲淹,"
+        "范仲淹对着画写了《岳阳楼记》。一个被贬的人修了楼,另一个被贬的人写了记。"
+        "两个贬官合作出了中国最出名的楼。"
+    )
+    legacy = f"开幕镜头。你落在了岳阳楼附近。这里有过——{full_text[:60]}..."
+
+    rendered = server._expand_legacy_landing_humanities(legacy)
+
+    assert rendered == f"开幕镜头。你落在了岳阳楼附近。这里有过——{full_text}"
+
+
 def test_ref_carries_ask_hook():
     """ref 带 name/title——追问走 ask 用。先事(事件)再人(人物)后作品。"""
     # 巴黎先有事件卡(攻占巴士底狱/巴黎公社)

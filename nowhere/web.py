@@ -122,7 +122,7 @@ async def state(_request: Request) -> JSONResponse:
         "path": s.path,
         "mode": s.mode,
         "local_time": local_time,
-        "last_text": s.last_text,
+        "last_text": _server._expand_legacy_landing_humanities(s.last_text),
         "radio": radio_info,
         "env": env_info,
     })

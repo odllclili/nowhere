@@ -696,6 +696,26 @@ def _format_landing_humanities(card: dict) -> str:
     return f"你落在了{card['place']}附近。这里有过——{card['text']}"
 
 
+def _expand_legacy_landing_humanities(text: str) -> str:
+    """Expand a landing story that an older version saved with ``...``."""
+    landing_start = text.rfind("你落在了")
+    marker = "附近。这里有过——"
+    marker_start = text.find(marker, landing_start)
+    if landing_start < 0 or marker_start < 0 or not text.endswith("..."):
+        return text
+
+    place = text[landing_start + len("你落在了"):marker_start]
+    story_start = marker_start + len(marker)
+    excerpt = text[story_start:-3]
+    entry = humanities._load().get("places", {}).get(place, {})
+    for category in ("事件", "人物", "作品"):
+        for card in entry.get(category, []):
+            full_story = card.get("text", "")
+            if full_story.startswith(excerpt):
+                return text[:story_start] + full_story
+    return text
+
+
 async def open_door_impl(to: str | None = None, resume: bool = False) -> dict:
     """Open the door and land somewhere."""
     async with _door_lock:
